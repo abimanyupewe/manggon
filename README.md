@@ -33,8 +33,6 @@ Manajemen kos putri multi-lokasi menghadapi beberapa tantangan kritis:
 
 ## Solusi
 
-Manggon adalah platform manajemen properti terintegrasi yang dirancang khusus untuk operasional kos putri dengan banyak cabang (multi-lokasi).
-
 ### Fitur Utama
 
 #### Untuk Pemilik (Owner / Superadmin)

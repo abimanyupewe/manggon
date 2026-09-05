@@ -1,6 +1,6 @@
 # Manggon
 
-**Manajemen Kos Putri Multi-Lokasi, Aman, dan Transparan.**
+**Manajemen Kos Putri Multi-Lokasi.**
 
 ![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
@@ -10,6 +10,8 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-6-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![Pest PHP](https://img.shields.io/badge/Pest_PHP-3.8-5B4638?style=for-the-badge&logo=pestphp&logoColor=white)
+
+Manggon adalah platform manajemen properti terintegrasi yang dirancang khusus untuk operasional kos putri dengan banyak cabang (multi-lokasi). Proyek ini memecahkan masalah pencatatan keuangan manual yang rawan fraud, mempercepat respons keluhan fasilitas, dan menyediakan sistem pemantauan keamanan (jam malam & buku tamu) yang menjembatani anak kos, staf penjaga, dan pemilik bisnis.
 
 ---
 

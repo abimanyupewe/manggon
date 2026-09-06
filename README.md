@@ -22,25 +22,35 @@
 
 ---
 
-## Daftar Isi
-1. [Tentang Manggon](#tentang-manggon)
-2. [Fitur Utama & Matriks Hak Akses](#fitur-utama--matriks-hak-akses)
-3. [Arsitektur & Tech Stack](#arsitektur--tech-stack)
-4. [Skema Basis Data](#skema-basis-data)
-5. [Prinsip Keamanan & Desain](#prinsip-keamanan--desain)
-6. [Panduan Instalasi & Penggunaan Lokal](#panduan-instalasi--penggunaan-lokal)
-7. [Kredensial Akun Percobaan (Seed Data)](#kredensial-akun-percobaan-seed-data)
-8. [Pengujian & Verifikasi](#pengujian--verifikasi)
+## Tentang Manggon
+
+**Manggon** adalah platform manajemen properti terpadu tingkat enterprise yang dirancang khusus untuk menangani operasional kos putri multi-cabang secara tersentralisasi. Sistem ini menghubungkan tiga pihak pemangku kepentingan utama: **Pemilik Kos (Owner)** yang membutuhkan transparansi finansial menyeluruh, **Penjaga Kos (Staf)** yang menjalankan operasional harian cabang secara tertib, dan **Anak Kos Putri (Tenant)** yang mengutamakan privasi, kenyamanan, serta kemudahan layanan hunian.
 
 ---
 
-## Tentang Manggon
+## Problem yang Diselesaikan
 
-**Manggon** adalah sistem manajemen properti kos putri terpadu yang dirancang khusus untuk menangani operasional multi-cabang secara tersentralisasi. Sistem ini memecahkan tantangan operasional klasik seperti:
-* **Risiko Fraud Keuangan:** Pembatasan mutlak pembuatan dan pengubahan nominal tagihan hanya oleh Pemilik (*Owner*), disertai audit trail staf verifikator.
-* **Keamanan & Ketertiban Jam Malam:** Digitalisasi izin pulang larut malam dan buku tamu perempuan secara terdata dan terverifikasi staf.
-* **Respons Keluhan Fasilitas:** Sistem tiket perbaikan fasilitas kamar (AC, air, listrik) dengan pemantauan status pengerjaan transparan.
-* **Akun Otomatis:** Otomatisasi pembuatan kredensial staf dan anak kos tanpa kerumitan administrasi manual.
+Dalam operasional bisnis kos putri tradisional dengan banyak lokasi cabang, pemilik dan pengelola kerap menghadapi tantangan struktural yang berulang. Platform Manggon dirancang untuk memecahkan lima masalah fundamental berikut:
+
+### 1. Risiko Fraud dan Kebocoran Finansial (Financial Leakage)
+* **Problem:** Pada pengelolaan konvensional, pembayaran sewa sering diterima secara tunai oleh penjaga cabang atau dicatat secara manual di spreadsheet. Hal ini menciptakan celah penggelapan dana sewa, manipulasi status pelunasan, atau mark-up tarif sewa kamar tanpa sepengetahuan pemilik yang tidak selalu berada di lokasi.
+* **Solusi Manggon:** Penerapan **Kontrol Finansial Mutlak (Owner-Only Financial Governance)**. Hanya Pemilik yang memiliki hak otorisasi untuk menerbitkan invoice tagihan baru, menentukan nominal harga sewa, mengedit rincian tagihan, atau menghapus transaksi. Staf penjaga dibatasi hak aksesnya (*restricted access*) hanya untuk memverifikasi kesesuaian bukti transfer bank yang diunggah anak kos. Setiap verifikasi, persetujuan, atau penolakan dicatat secara otomatis ke dalam rekam jejak audit (*audit trail polymorphic*) lengkap dengan timestamp, IP address, dan identitas staf verifikator.
+
+### 2. Penegakan Disiplin Jam Malam dan Keamanan Kos Putri
+* **Problem:** Kos putri memiliki regulasi privasi dan keamanan ketat, seperti batasan jam malam, pelarangan tamu pria masuk ke area kamar, dan kewajiban pelaporan jika ada kerabat perempuan menginap. Pencatatan menggunakan buku tamu fisik sering kali diabaikan oleh anak kos karena enggan melapor tatap muka saat larut malam, atau bukunya mudah hilang dan tidak terpantau oleh pemilik.
+* **Solusi Manggon:** Modul **Satpam Digital**. Anak kos dapat mengajukan permohonan izin pulang larut malam atau pendaftaran kunjungan tamu wanita secara mandiri langsung dari aplikasi ponsel. Formulir mencakup jam rencana kedatangan, identitas tamu, dan alasan perizinan. Staf penjaga menerima notifikasi langsung di dashboard Action Center untuk menyetujui atau menolak permohonan tersebut, menciptakan arsip keamanan yang rapi, transparan, dan dapat diaudit sewaktu-waktu.
+
+### 3. Lambatnya Respons Perbaikan Fasilitas Kamar
+* **Problem:** Laporan kerusakan fasilitas penting (seperti AC bocor, kran air patah, water heater rusak, atau korsleting listrik) biasanya dikirim melalui pesan chat pribadi ke penjaga. Pesan tersebut rawan tertimbun, terlambat diteruskan ke teknisi, atau status perbaikannya tidak pernah terkonfirmasi kembali ke anak kos, sehingga menurunkan tingkat kepuasan dan retensi penghuni.
+* **Solusi Manggon:** **Sistem Tiket Keluhan Terintegrasi (Complaint Ticket Tracking)**. Anak kos menerbitkan tiket keluhan resmi dari aplikasi mobile lengkap dengan deskripsi detail dan lampiran foto bukti kerusakan. Tiket memiliki nomor registrasi unik (`TKT-YYYYMM-XXX`) dan langsung masuk ke antrean tugas staf cabang terkait. Seluruh proses pengerjaan (status `pending` -> `in_progress` -> `resolved`) beserta catatan penanganan teknisi dapat dipantau langsung secara real-time oleh anak kos dan pemilik kos.
+
+### 4. Fragmentasi Data dan Kesulitan Pengawasan Multi-Cabang
+* **Problem:** Mengelola beberapa cabang kos di lokasi geografis yang berbeda menimbulkan kesulitan pemantauan okupansi kamar, status keterisian, dan performa staf jaga secara terpusat. Di sisi lain, sistem tanpa isolasi data yang ketat berisiko menimbulkan kesalahan operasional antar cabang.
+* **Solusi Manggon:** **Strict Data Scoping & Role-Based Access Control (RBAC)**. Pemilik kos memiliki dashboard eksekutif untuk memantau performa agregat seluruh cabang (tingkat okupansi, pendapatan berjalan, audit aktivitas staf). Sementara itu, staf penjaga dikunci secara ketat berdasarkan cabang penugasannya (`property_id`), sehingga hanya dapat melihat dan memproses data di cabangnya sendiri melalui antarmuka tugas harian bergaya *Inbox-Zero Action Center*.
+
+### 5. Kerumitan Administrasi Akun dan Keamanan Kata Sandi
+* **Problem:** Pendaftaran kredensial anak kos dan staf baru secara manual memakan waktu, rawan kesalahan penulisan, dan sering kali menggunakan kata sandi lemah yang tidak pernah diperbarui.
+* **Solusi Manggon:** **Automated Credential Generation & First-Login Force Password Change**. Sistem secara otomatis menghasilkan username terstandarisasi berbasis kombinasi unik huruf kecil (*strict lowercase*) dan password acak. Saat anak kos atau staf login untuk pertama kali, middleware sistem mencegat sesi dan mewajibkan penggantian kata sandi baru yang kuat sebelum fitur dashboard atau aplikasi dapat diakses.
 
 ---
 

@@ -20,6 +20,7 @@ Homestead.yaml
 
 # Internal Project Specifications & Planning
 /dev/
+/docs/
 
 # Dependencies
 /node_modules

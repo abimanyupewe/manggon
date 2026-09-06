@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏡 Manggon
+# Manggon
 
 **Platform Manajemen Kos Putri Multi-Lokasi, Aman, dan Transparan**
 
@@ -22,19 +22,19 @@
 
 ---
 
-## 📌 Daftar Isi
-1. [Tentang Manggon](#-tentang-manggon)
-2. [Fitur Utama & Matriks Hak Akses](#-fitur-utama--matriks-hak-akses)
-3. [Arsitektur & Tech Stack](#-arsitektur--tech-stack)
-4. [Skema Basis Data](#-skema-basis-data)
-5. [Prinsip Keamanan & Desain](#-prinsip-keamanan--desain)
-6. [Panduan Instalasi & Penggunaan Lokal](#-panduan-instalasi--penggunaan-lokal)
-7. [Kredensial Akun Percobaan (Seed Data)](#-kredensial-akun-percobaan-seed-data)
-8. [Pengujian & Verifikasi](#-pengujian--verifikasi)
+## Daftar Isi
+1. [Tentang Manggon](#tentang-manggon)
+2. [Fitur Utama & Matriks Hak Akses](#fitur-utama--matriks-hak-akses)
+3. [Arsitektur & Tech Stack](#arsitektur--tech-stack)
+4. [Skema Basis Data](#skema-basis-data)
+5. [Prinsip Keamanan & Desain](#prinsip-keamanan--desain)
+6. [Panduan Instalasi & Penggunaan Lokal](#panduan-instalasi--penggunaan-lokal)
+7. [Kredensial Akun Percobaan (Seed Data)](#kredensial-akun-percobaan-seed-data)
+8. [Pengujian & Verifikasi](#pengujian--verifikasi)
 
 ---
 
-## 📖 Tentang Manggon
+## Tentang Manggon
 
 **Manggon** adalah sistem manajemen properti kos putri terpadu yang dirancang khusus untuk menangani operasional multi-cabang secara tersentralisasi. Sistem ini memecahkan tantangan operasional klasik seperti:
 * **Risiko Fraud Keuangan:** Pembatasan mutlak pembuatan dan pengubahan nominal tagihan hanya oleh Pemilik (*Owner*), disertai audit trail staf verifikator.
@@ -44,7 +44,7 @@
 
 ---
 
-## 👥 Fitur Utama & Matriks Hak Akses
+## Fitur Utama & Matriks Hak Akses
 
 | Hak Akses | Platform | Fitur Utama | Batasan & Aturan Keamanan |
 | :--- | :--- | :--- | :--- |
@@ -54,7 +54,7 @@
 
 ---
 
-## 🛠️ Arsitektur & Tech Stack
+## Arsitektur & Tech Stack
 
 Manggon dibangun menggunakan arsitektur **Monolithic Backend + Clean SPA + Headless Mobile API**:
 
@@ -67,7 +67,7 @@ Manggon dibangun menggunakan arsitektur **Monolithic Backend + Clean SPA + Headl
 
 ---
 
-## 🗄️ Skema Basis Data
+## Skema Basis Data
 
 Sistem memiliki 8 entitas utama yang saling terhubung:
 
@@ -102,7 +102,7 @@ erDiagram
 
 ---
 
-## 🔒 Prinsip Keamanan & Desain
+## Prinsip Keamanan & Desain
 
 1. **Strict Data Scoping Policy:**
    Staf cabang diproteksi melalui Laravel Policy `auth()->user()->property_id === $target->property_id`. Staf tidak memiliki akses baca/tulis ke cabang lain.
@@ -117,7 +117,7 @@ erDiagram
 
 ---
 
-## 🚀 Panduan Instalasi & Penggunaan Lokal
+## Panduan Instalasi & Penggunaan Lokal
 
 ### Prasyarat Sistem
 * PHP >= 8.2 dengan ekstensi `pdo_pgsql`, `mbstring`, `openssl`
@@ -170,7 +170,7 @@ erDiagram
 
 ---
 
-## 🔑 Kredensial Akun Percobaan (Seed Data)
+## Kredensial Akun Percobaan (Seed Data)
 
 Database seeder telah menyiapkan data sampel multi-cabang (Cabang Melati Dukuh Kupang & Cabang Anggrek Gubeng) dengan kata sandi bawaan **`password123`**:
 
@@ -185,7 +185,7 @@ Database seeder telah menyiapkan data sampel multi-cabang (Cabang Melati Dukuh K
 
 ---
 
-## 🧪 Pengujian & Verifikasi
+## Pengujian & Verifikasi
 
 Proyek ini dilengkapi dengan suite pengujian otomatis untuk memvalidasi integritas relasi model, hak akses, dan kepatuhan tipe:
 

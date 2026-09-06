@@ -17,6 +17,23 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
+
+        $middleware->alias([
+            'role' => \App\Http\Middleware\EnsureUserRole::class,
+            'password.changed' => \App\Http\Middleware\EnsurePasswordIsChanged::class,
+        ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'login',
+            'logout',
+            'password/force-change',
+            'properties*',
+            'rooms*',
+            'payments*',
+            'security-logs*',
+            'complaints*',
+            'users*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

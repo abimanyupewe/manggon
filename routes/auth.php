@@ -51,6 +51,12 @@ Route::middleware('auth')->group(function () {
 
     Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
 
+    Route::get('password/force-change', [\App\Http\Controllers\Auth\ForcePasswordChangeController::class, 'create'])
+        ->name('password.force-change');
+
+    Route::post('password/force-change', [\App\Http\Controllers\Auth\ForcePasswordChangeController::class, 'store'])
+        ->name('password.force-change.update');
+
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 });

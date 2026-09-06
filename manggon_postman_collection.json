@@ -1,0 +1,1388 @@
+{
+	"info": {
+		"_postman_id": "8f3b2026-manggon-collection-v2",
+		"name": "Manggon - Complete Operational API & Auth",
+		"description": "Koleksi Postman komprehensif untuk sistem manajemen kos putri multi-cabang Manggon. Mencakup pengujian sistem, autentikasi multi-identitas (username/email), seluruh peran (Owner, Staf Melati, Staf Anggrek, Anak Kos), penegakan First-Login Force Password Change, CRUD Properti & Kamar, Generator Kredensial Staf & Tenant, Kontrol Finansial Mutlak (Buat Tagihan), Validasi Pembayaran Staf (Data Scoping Cabang), Action Center Keamanan (Buku Tamu & Izin Malam), Disposisi Tiket Keluhan Kamar, dan Audit Trail Monitoring.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "00. Sistem & Healthcheck",
+			"item": [
+				{
+					"name": "Health Check (Application Up)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/up",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"up"
+							]
+						},
+						"description": "Memeriksa status hidup aplikasi Laravel (200 OK)."
+					},
+					"response": []
+				},
+				{
+					"name": "Landing Page / Inisialisasi Session",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "text/html, application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								""
+							]
+						},
+						"description": "Memuat landing page publik dan menginisialisasi cookie session."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "01. Autentikasi (Dual Login & Multi-Role)",
+			"item": [
+				{
+					"name": "Login as Owner (Username: owner_manggon)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Login Owner Berhasil\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 302]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"owner_manggon\",\n    \"password\": \"password123\",\n    \"remember\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login sebagai Pemilik (Owner / Superadmin) menggunakan kredensial username."
+					},
+					"response": []
+				},
+				{
+					"name": "Login as Owner (Email: owner@manggon.id)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"owner@manggon.id\",\n    \"password\": \"password123\",\n    \"remember\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login sebagai Pemilik menggunakan alamat email."
+					},
+					"response": []
+				},
+				{
+					"name": "Login as Staff Cabang Melati (Username: siti7891)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"siti7891\",\n    \"password\": \"password123\",\n    \"remember\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login sebagai Staf Penjaga Kos Cabang Melati (Surabaya Barat)."
+					},
+					"response": []
+				},
+				{
+					"name": "Login as Staff Cabang Anggrek (Username: dewi7892)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"dewi7892\",\n    \"password\": \"password123\",\n    \"remember\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login sebagai Staf Penjaga Kos Cabang Anggrek (Gubeng)."
+					},
+					"response": []
+				},
+				{
+					"name": "Login as Tenant Melati A01 (Username: panda_a01)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"panda_a01\",\n    \"password\": \"password123\",\n    \"remember\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login sebagai Anak Kos Putri Kamar A01 (Putri Ayu Wandira) - Akun aktif."
+					},
+					"response": []
+				},
+				{
+					"name": "Login as Tenant Melati A02 (Username: ceri_a02 - Must Change Password)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"ceri_a02\",\n    \"password\": \"password123\",\n    \"remember\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login sebagai Anak Kos Putri Kamar A02 yang wajib mengubah kata sandi acak perdana."
+					},
+					"response": []
+				},
+				{
+					"name": "Login Negative Test (Password Salah)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 422 Unprocessable Entity\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"owner_manggon\",\n    \"password\": \"sandi_salah_123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Pengujian penolakan login dengan kredensial salah."
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"logout"
+							]
+						},
+						"description": "Mengakhiri session login pengguna."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "02. First-Login Enforcement (Force Password Change)",
+			"item": [
+				{
+					"name": "Step 1: Akses Dashboard Ceri A02 (Expect 403 MUST_CHANGE_PASSWORD)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403 Forbidden\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"pm.test(\"Code is MUST_CHANGE_PASSWORD\", function () {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.code).to.eql(\"MUST_CHANGE_PASSWORD\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/dashboard",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dashboard"
+							]
+						},
+						"description": "Pastikan login terlebih dahulu sebagai 'ceri_a02'. Sistem harus memblokir akses ke dashboard."
+					},
+					"response": []
+				},
+				{
+					"name": "Step 2: Submit Password Baru Pribadi",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Password Berhasil Diubah (200 / 302)\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 302]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"KataSandiBaru2026!\",\n    \"password_confirmation\": \"KataSandiBaru2026!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/password/force-change",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"password",
+								"force-change"
+							]
+						},
+						"description": "Mengirim kata sandi baru untuk akun perdana dan melepaskan status must_change_password."
+					},
+					"response": []
+				},
+				{
+					"name": "Step 3: Akses Dashboard Sesudah Ganti Password (Expect 200 OK)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Akses Dashboard Terbuka (Status 200)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "text/html, application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/dashboard",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dashboard"
+							]
+						},
+						"description": "Verifikasi bahwa pemblokiran telah dilepas dan pengguna dapat mengakses dashboard secara penuh."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "03. Protected Dashboard & Settings",
+			"item": [
+				{
+					"name": "Get Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "text/html, application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/dashboard",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dashboard"
+							]
+						},
+						"description": "Mengakses dasbor utama Manggon."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile Settings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "text/html, application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/settings/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"settings",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "04. Manajemen Properti (Owner & Staff)",
+			"item": [
+				{
+					"name": "Get All Properties (Owner: Semua, Staff: Cabang Sendiri)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Memiliki list data properti\", function () {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.data).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/properties",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"properties"
+							]
+						},
+						"description": "Owner melihat semua properti. Staf hanya melihat properti cabang penugasannya."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Property Detail (Cabang Melati ID 1)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/properties/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"properties",
+								"1"
+							]
+						},
+						"description": "Melihat detail cabang beserta daftar kamar dan staf."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Property Baru (Owner Only)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 201 Created\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Manggon Cabang Cempaka (Klampis)\",\n    \"address\": \"Jl. Klampis Jaya No. 88, Surabaya\",\n    \"phone_number\": \"081299998888\",\n    \"description\": \"Kos putri asri dekat kampus ITATS dan Narotama.\",\n    \"facilities\": [\"AC\", \"WiFi 100 Mbps\", \"CCTV\", \"Dapur Bersama\"],\n    \"bank_account_info\": {\n        \"bank\": \"BCA\",\n        \"account_number\": \"8888123456\",\n        \"account_holder\": \"Manggon Residence Cempaka\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/properties",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"properties"
+							]
+						},
+						"description": "Menambahkan cabang kos baru. Hanya diizinkan untuk Owner."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Data Property (Owner Only)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Manggon Cabang Melati (Dukuh Kupang Barat)\",\n    \"address\": \"Jl. Dukuh Kupang Barat XX No. 12, Surabaya Barat\",\n    \"phone_number\": \"081234567891\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/properties/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"properties",
+								"1"
+							]
+						},
+						"description": "Memperbarui spesifikasi cabang kos."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "05. Manajemen Kamar (Owner & Staff)",
+			"item": [
+				{
+					"name": "Get All Rooms (Filter by property_id=1)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/rooms?property_id=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"rooms"
+							],
+							"query": [
+								{
+									"key": "property_id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Menampilkan daftar seluruh kamar pada Cabang Melati (ID: 1)."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Kamar Baru (Owner Only)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"property_id\": 1,\n    \"room_number\": \"A07\",\n    \"floor\": 2,\n    \"price\": 1600000,\n    \"status\": \"empty\",\n    \"facilities\": [\"AC\", \"WiFi\", \"Kasur Springbed\", \"Meja Belajar\"],\n    \"description\": \"Kamar baru lantai 2 dengan sirkulasi udara sejuk.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/rooms",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"rooms"
+							]
+						},
+						"description": "Menambahkan kamar baru pada suatu cabang. Hanya diizinkan untuk Owner."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Status Kamar (Staf Cabangnya & Owner)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status kamar berhasil diubah\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"maintenance\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/rooms/3/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"rooms",
+								"3",
+								"status"
+							]
+						},
+						"description": "Mengubah status ketersediaan kamar ke maintenance, empty, atau occupied."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "06. Manajemen Kredensial & Akun (Generate Staff & Tenant)",
+			"item": [
+				{
+					"name": "Get All Users (Filter role=tenant / staff)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users?role=tenant",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "role",
+									"value": "tenant"
+								}
+							]
+						},
+						"description": "Melihat daftar pengguna aktif."
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Akun Staf Baru (Owner Only)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Akun Staf Berhasil Dibuat (Status 201)\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test(\"Username berformat nama + 4 digit hp\", function () {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.data.username).to.include(\"4321\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Rudi Hartono\",\n    \"phone_number\": \"081298764321\",\n    \"email\": \"rudi@manggon.id\",\n    \"property_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/generate-staff",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"generate-staff"
+							]
+						},
+						"description": "Sistem otomatis membuat username staf 'rudi4321' dan password acak."
+					},
+					"response": []
+				},
+				{
+					"name": "Daftarkan Tenant & Generate Username (Owner Only)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Anak Kos Berhasil Didaftarkan (Status 201)\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test(\"Username anak kos berformat kamus kata + kamar\", function () {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.data.username).to.include(\"_\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Amanda Manopo\",\n    \"room_id\": 4,\n    \"phone_number\": \"085788990011\",\n    \"email\": \"amanda@gmail.com\",\n    \"emergency_contact_name\": \"H. Wijaya (Ayah)\",\n    \"emergency_contact_phone\": \"081233445566\",\n    \"emergency_contact_relation\": \"Orang Tua\",\n    \"identity_card_number\": \"3578019988770001\",\n    \"entry_date\": \"2026-09-10\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/generate-tenant",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"generate-tenant"
+							]
+						},
+						"description": "Daftarkan anak kos baru pada kamar yang kosong (ID: 4), otomatis generate username (misal: panda_a04), dan ubah status kamar menjadi occupied."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "07. Manajemen Finansial & Pembayaran (Owner vs Staff)",
+			"item": [
+				{
+					"name": "Get All Payments (Daftar Tagihan & Pembayaran)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/payments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments"
+							]
+						},
+						"description": "Menampilkan seluruh daftar tagihan. Staf hanya melihat tagihan di cabang tempat ia ditugaskan."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Tagihan Sewa Baru (Kontrol Finansial Mutlak - Owner Only)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Tagihan berhasil diterbitkan (Status 201)\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tenant_id\": 4,\n    \"billing_period\": \"Oktober 2026\",\n    \"amount\": 1500000,\n    \"notes\": \"Tagihan sewa bulanan reguler.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments"
+							]
+						},
+						"description": "Hanya Pemilik yang berhak membuat tagihan sewa. Staf dilarang membuat tagihan."
+					},
+					"response": []
+				},
+				{
+					"name": "Validasi Bukti Transfer (Staf Cabang Terkait / Owner)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Pembayaran berhasil diverifikasi (Status 200)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"notes\": \"Mutasi rekening BCA sesuai, nominal pas Rp 1.850.000.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payments/2/verify",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								"2",
+								"verify"
+							]
+						},
+						"description": "Staf penanggung jawab cabang memvalidasi dan menyetujui pembayaran sewa."
+					},
+					"response": []
+				},
+				{
+					"name": "Tolak Bukti Transfer (Staf Cabang Terkait / Owner)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"rejection_reason\": \"Foto bukti transfer buram dan nominal tidak terbaca. Harap unggah ulang struk mutasi m-banking.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payments/2/reject",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								"2",
+								"reject"
+							]
+						},
+						"description": "Menolak bukti transfer dengan alasan tertulis yang jelas."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "08. Action Center Keamanan (Buku Tamu & Izin Malam)",
+			"item": [
+				{
+					"name": "Get Security Logs (Daftar Izin & Tamu)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/security-logs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"security-logs"
+							]
+						},
+						"description": "Menampilkan daftar izin pulang malam dan tamu yang membutuhkan persetujuan staf."
+					},
+					"response": []
+				},
+				{
+					"name": "Setujui Izin Keamanan (Approve Security Log)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/security-logs/2/approve",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"security-logs",
+								"2",
+								"approve"
+							]
+						},
+						"description": "Staf menyetujui izin tamu menginap atau izin pulang malam di cabangnya."
+					},
+					"response": []
+				},
+				{
+					"name": "Tolak Izin Keamanan (Reject Security Log)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"rejection_reason\": \"Melebihi batas toleransi jam malam kos putri (maksimal pukul 23:00 WIB).\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/security-logs/2/reject",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"security-logs",
+								"2",
+								"reject"
+							]
+						},
+						"description": "Menolak izin keamanan dengan alasan tertulis."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "09. Tiket Keluhan Fasilitas Kamar",
+			"item": [
+				{
+					"name": "Get Complaint Tickets (Daftar Keluhan)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/complaints",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"complaints"
+							]
+						},
+						"description": "Melihat daftar tiket keluhan fasilitas kamar dari anak kos."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Status Tiket Keluhan (Staf & Owner)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"resolved\",\n    \"resolution_notes\": \"Teknisi telah mengganti sparepart remote AC dan mencuci filter indoor. AC berfungsi dingin kembali normal.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/complaints/1/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"complaints",
+								"1",
+								"status"
+							]
+						},
+						"description": "Menandai tiket komplain selesai (resolved) atau sedang dikerjakan (in_progress)."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "10. Audit Trail Monitoring (Owner Only)",
+			"item": [
+				{
+					"name": "Get Activity Logs (Audit Trail Seluruh Sistem)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Owner bisa melihat audit log (Status 200)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/activity-logs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"activity-logs"
+							]
+						},
+						"description": "Hanya Pemilik yang dapat mengakses jejak log audit untuk mencegah fraud dan memantau kinerja staf penjaga."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+}

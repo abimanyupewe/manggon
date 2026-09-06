@@ -19,14 +19,15 @@ class EnsurePasswordIsChanged
 
         if ($user && $user->must_change_password) {
             // Izinkan akses ke rute khusus penggantian password dan logout
-            if ($request->routeIs('password.force-change*') || $request->routeIs('logout')) {
+            if ($request->routeIs('password.force-change*') || $request->routeIs('logout') || $request->is('api/v1/auth/*')) {
                 return $next($request);
             }
 
-            if ($request->expectsJson()) {
+            if ($request->expectsJson() || $request->is('api/*')) {
                 return response()->json([
-                    'message' => 'Anda wajib memperbarui kata sandi akun sebelum mengakses fitur lainnya.',
+                    'status' => 'error',
                     'code' => 'MUST_CHANGE_PASSWORD',
+                    'message' => 'Anda wajib memperbarui kata sandi akun sebelum mengakses fitur lainnya.',
                 ], 403);
             }
 

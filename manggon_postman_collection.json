@@ -1376,12 +1376,653 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "11. Mobile Tenant REST API (Sanctum Bearer Token)",
+			"item": [
+				{
+					"name": "11.1 Mobile Login (Tenant Bunga101)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Login Mobile Sukses (Status 200)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set(\"tenant_token\", jsonData.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"bunga101\",\n    \"password\": \"password\",\n    \"device_name\": \"Postman Flutter Client\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Autentikasi anak kos putri via REST API. Menghasilkan Sanctum Bearer Token yang disimpan otomatis ke koleksi Postman variable {{tenant_token}}."
+					},
+					"response": []
+				},
+				{
+					"name": "11.2 Ubah Kata Sandi Akun (Sanctum Auth)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set(\"tenant_token\", jsonData.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{tenant_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"current_password\": \"password\",\n    \"password\": \"PasswordBaru123#\",\n    \"password_confirmation\": \"PasswordBaru123#\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/change-password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"change-password"
+							]
+						},
+						"description": "Mengganti kata sandi anak kos dari aplikasi mobile. Digunakan juga untuk membebaskan first-login enforcement."
+					},
+					"response": []
+				},
+				{
+					"name": "11.3 Tampilkan Profil & Kamar Saya",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Profil anak kos tampil (Status 200)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{tenant_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/tenant/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tenant",
+								"profile"
+							]
+						},
+						"description": "Mengambil detail identitas, kamar sewa, cabang kos, dan kontak darurat anak kos yang sedang login."
+					},
+					"response": []
+				},
+				{
+					"name": "11.4 Perbarui Kontak & Kontak Darurat",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{tenant_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone_number\": \"081234567899\",\n    \"emergency_contact_name\": \"Ibu Sri Wahyuni\",\n    \"emergency_contact_phone\": \"081299998888\",\n    \"emergency_contact_relation\": \"Ibu Kandung\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/tenant/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tenant",
+								"profile"
+							]
+						},
+						"description": "Memperbarui nomor HP pribadi dan kontak darurat anak kos untuk keamanan."
+					},
+					"response": []
+				},
+				{
+					"name": "11.5 Riwayat & Daftar Tagihan Sewa",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Daftar tagihan tampil (Status 200)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"if (jsonData.data && jsonData.data.length > 0) {",
+									"    pm.collectionVariables.set(\"tenant_bill_id\", jsonData.data[0].id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{tenant_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/tenant/bills",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tenant",
+								"bills"
+							]
+						},
+						"description": "Daftar seluruh tagihan sewa bulanan anak kos beserta status pembayaran dan rekening pembayaran kos."
+					},
+					"response": []
+				},
+				{
+					"name": "11.6 Detail Tagihan Sewa",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{tenant_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/tenant/bills/{{tenant_bill_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tenant",
+								"bills",
+								"{{tenant_bill_id}}"
+							]
+						},
+						"description": "Melihat rincian tagihan tertentu termasuk invoice number dan nominal yang harus ditransfer."
+					},
+					"response": []
+				},
+				{
+					"name": "11.7 Unggah Bukti Transfer Sewa (Mandiri)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Bukti transfer berhasil diunggah (Status 200)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{tenant_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"proof_image\": \"https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=500\",\n    \"notes\": \"Transfer via BCA Mobile a.n. Bunga\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/tenant/bills/{{tenant_bill_id}}/upload-proof",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tenant",
+								"bills",
+								"{{tenant_bill_id}}",
+								"upload-proof"
+							]
+						},
+						"description": "Anak kos mengunggah bukti struk transfer pembayaran kos. Status tagihan otomatis berganti menjadi 'pending_verification' menunggu verifikasi staf jaga cabang."
+					},
+					"response": []
+				},
+				{
+					"name": "11.8 Satpam Digital: Riwayat Perizinan",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Log satpam digital tampil (Status 200)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{tenant_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/tenant/security-logs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tenant",
+								"security-logs"
+							]
+						},
+						"description": "Melihat riwayat pengajuan izin pulang malam dan izin tamu wanita."
+					},
+					"response": []
+				},
+				{
+					"name": "11.9 Satpam Digital: Ajukan Izin Pulang Malam",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Izin pulang malam terkirim (Status 201)\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{tenant_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"late_return\",\n    \"date\": \"2026-09-07\",\n    \"planned_time\": \"23:30\",\n    \"notes\": \"Mengerjakan tugas praktikum di laboratorium kampus hingga larut malam.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/tenant/security-logs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tenant",
+								"security-logs"
+							]
+						},
+						"description": "Mengajukan izin pulang malam melebihi jam malam standar kos. Tiket akan masuk ke sistem staf jaga cabang."
+					},
+					"response": []
+				},
+				{
+					"name": "11.10 Satpam Digital: Ajukan Izin Tamu Wanita",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Izin tamu wanita terkirim (Status 201)\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{tenant_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"guest_visit\",\n    \"date\": \"2026-09-08\",\n    \"planned_time\": \"18:30 - 21:00\",\n    \"guest_name\": \"Nadia Putri (Sepupu Perempuan)\",\n    \"notes\": \"Kunjungan saudara perempuan dari luar kota.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/tenant/security-logs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tenant",
+								"security-logs"
+							]
+						},
+						"description": "Mengajukan izin tamu wanita berkunjung/menginap sesuai aturan ketat kos putri."
+					},
+					"response": []
+				},
+				{
+					"name": "11.11 Aduan Kamar: Riwayat Keluhan Fasilitas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Riwayat keluhan tampil (Status 200)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{tenant_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/tenant/complaints",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tenant",
+								"complaints"
+							]
+						},
+						"description": "Melihat daftar keluhan fasilitas kamar yang pernah diajukan dan status tindak lanjutnya."
+					},
+					"response": []
+				},
+				{
+					"name": "11.12 Aduan Kamar: Ajukan Laporan Kerusakan Fasilitas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Laporan keluhan terkirim (Status 201)\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{tenant_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Keran Wastafel Kamar Mandi Bocor\",\n    \"description\": \"Air keran menetes terus meskipun sudah ditutup rapat. Mohon bantuan perbaikan.\",\n    \"photo_evidence\": \"https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=500\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/tenant/complaints",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tenant",
+								"complaints"
+							]
+						},
+						"description": "Membuat tiket keluhan/kerusakan fasilitas kamar baru langsung ke staf jaga cabang."
+					},
+					"response": []
+				},
+				{
+					"name": "11.13 Mobile Logout (Revoke Sanctum Bearer Token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Logout Mobile Sukses (Status 200)\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{tenant_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Menghapus Bearer Token aktif dari server (Revoke Sanctum token) sehingga sesi mobile berakhir dengan aman."
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"variable": [
 		{
 			"key": "base_url",
 			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "tenant_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "tenant_bill_id",
+			"value": "1",
 			"type": "string"
 		}
 	]

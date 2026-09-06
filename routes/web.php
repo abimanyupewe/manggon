@@ -11,13 +11,22 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('welcome');
+    $properties = \App\Models\Property::withCount([
+        'rooms',
+        'rooms as empty_rooms_count' => function ($q) {
+            $q->where('status', \App\Enums\RoomStatus::EMPTY);
+        },
+    ])->with(['rooms' => function ($q) {
+        $q->orderBy('price', 'asc');
+    }])->get();
+
+    return Inertia::render('welcome', [
+        'properties' => $properties,
+    ]);
 })->name('home');
 
 Route::middleware(['auth', 'password.changed'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
     // Rute bersama Owner & Staf (dengan Policy Data Scoping cabang)
     Route::middleware('role:owner,staff')->group(function () {

@@ -50,6 +50,8 @@ class UserManagementController extends Controller
 
         return Inertia::render('users/index', [
             'users' => $users,
+            'properties' => \App\Models\Property::all(),
+            'available_rooms' => \App\Models\Room::with('property')->where('status', \App\Enums\RoomStatus::EMPTY)->get(),
         ]);
     }
 

@@ -43,8 +43,16 @@ class PaymentManagementController extends Controller
             ]);
         }
 
+        $tenants = \App\Models\User::with(['tenantProfile.room', 'property'])
+            ->where('role', \App\Enums\UserRole::TENANT)
+            ->whereHas('tenantProfile', function ($q) {
+                $q->whereNotNull('room_id');
+            })->get();
+
         return Inertia::render('payments/index', [
             'payments' => $payments,
+            'properties' => \App\Models\Property::all(),
+            'tenants' => $tenants,
         ]);
     }
 
